@@ -1,0 +1,91 @@
+<script>
+    function computerPlay() {
+        var random = Math.random();
+        var played_hand = ""
+
+        switch(true) {
+            case random < 0.33:
+                played_hand = "scissors"
+                break;
+            case random < 0.66:
+                played_hand = "rock"
+                break;
+            default:
+                played_hand = "paper"
+                break;
+        }
+        
+        return played_hand;
+    }  
+
+    function playerPlay() {
+        playerSelection = prompt("Please choose what you are going to play")
+        playerSelection = playerSelection.toLowerCase()
+
+        if (playerSelection != "scissors") {
+            if (playerSelection != "paper") {
+                if (playerSelection != "rock") {
+                    alert("Invalid selection. Please try again");
+                    playerPlay();
+                }
+            }
+        }
+
+        return playerSelection;
+    }
+
+    function playerWin(playerSelection,computerSelection = computerPlay) {
+
+        if (playerSelection == "scissors" && computerSelection == "paper") {
+            return true;
+        }   else if (playerSelection == "rock" && computerSelection == "scissors") {
+            return true;
+        }   else if (playerSelection == "paper" && computerSelection == "rock") {
+            return true;
+        }   else {
+            return false;
+        }
+   }
+
+   function tie(playerSelection,computerSelection=computerPlay) {
+       if (playerSelection == computerSelection) {
+           return true;
+       } else {
+           return false;
+       }
+   }
+
+    function playRound() {
+        var outcome = "";
+        var computerSelection = computerPlay();
+        var playerSelection = playerPlay();
+
+        if (tie(playerSelection, computerSelection)) {
+            outcome = "You have tied";
+        } else if (playerWin(playerSelection,computerSelection)) {
+            outcome = `You win! ${playerSelection} beats ${computerSelection}`;
+        } else {
+            outcome = `You lose! ${computerSelection} beats ${playerSelection}`
+        }
+        return outcome;
+    }
+
+    var requested_rounds = parseInt(prompt("How many rounds of Rock Paper Scissors do you want to play?"));
+    
+    function game(rounds = requested_rounds) {
+        var i;
+        var times_won = 0;
+        for (i=0; i < rounds; i++) {
+            outcome = playRound();
+            if (outcome[4] == "w") {
+                times_won++;
+            }
+            alert(outcome);
+        }
+
+        alert(`You have won ${times_won} times out of ${rounds}`);
+        return;
+        
+    }
+
+</script>

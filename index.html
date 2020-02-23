@@ -1,4 +1,84 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>
+            Rock Paper Scissors
+        </title>
+    </head>
+
+    <body>
+        <div id = "buttons">
+            <button id = "chooseRounds">
+                Choose number of rounds
+            </button>
+
+            <button id = "start">
+                Start
+            </button>
+
+            <button id = "chooseHand">
+                Choose your hand
+            </button>
+        </div>
+
+        <div id = "selection">
+
+        </div>
+
+        <div id = "currentSelection">
+
+        </div>
+
+        <div id = "results">
+
+        </div>
+
+    </body>
+
+</html>
+
 <script>
+    const world = document.querySelector("html");
+    const selectionContainer = document.querySelector("#selection");
+    var playerSelection = "";
+    var requested_rounds = 0;
+    var timesPlayed = 0;
+    var timesWon = 0;
+
+    const rockSelection = document.createElement("button");
+    rockSelection.textContent = "Rock";
+    rockSelection.addEventListener("click", function(e) {
+        playerSelection = "rock";
+        alert(`You have chosen Rock`);
+        while (selectionContainer.hasChildNodes()) {
+            selectionContainer.removeChild(selectionContainer.lastChild);
+        }
+    })
+
+    const scissorsSelection = document.createElement("button");
+    scissorsSelection.textContent = "Scissors";
+    scissorsSelection.addEventListener("click", function(e) {
+        playerSelection = "scissors";
+        alert(`You have chosen Scissors`);
+        while (selectionContainer.hasChildNodes()) {
+            selectionContainer.removeChild(selectionContainer.lastChild);
+        }
+    })
+
+    const paperSelection = document.createElement("button");
+    paperSelection.textContent = "Paper"
+    paperSelection.addEventListener("click", function(e) {
+        playerSelection = "paper"
+        alert(`You have chosen Paper`)
+        while (selectionContainer.hasChildNodes()) {
+            selectionContainer.removeChild(selectionContainer.lastChild);
+        }
+    })
+
+
+    
+
     function computerPlay() {
         var random = Math.random();
         var played_hand = ""
@@ -13,26 +93,10 @@
             default:
                 played_hand = "paper"
                 break;
-        }
-        
+        } 
         return played_hand;
     }  
 
-    function playerPlay() {
-        playerSelection = prompt("Please choose what you are going to play")
-        playerSelection = playerSelection.toLowerCase()
-
-        if (playerSelection != "scissors") {
-            if (playerSelection != "paper") {
-                if (playerSelection != "rock") {
-                    alert("Invalid selection. Please try again");
-                    playerPlay();
-                }
-            }
-        }
-
-        return playerSelection;
-    }
 
     function playerWin(playerSelection,computerSelection = computerPlay) {
 
@@ -58,34 +122,83 @@
     function playRound() {
         var outcome = "";
         var computerSelection = computerPlay();
-        var playerSelection = playerPlay();
+        var playerWon = false;
 
         if (tie(playerSelection, computerSelection)) {
             outcome = "You have tied";
         } else if (playerWin(playerSelection,computerSelection)) {
             outcome = `You win! ${playerSelection} beats ${computerSelection}`;
+            playerWon = true
         } else {
             outcome = `You lose! ${computerSelection} beats ${playerSelection}`
         }
-        return outcome;
+
+        playerSelection = "";
+        alert(outcome);
+        return playerWon;
     }
 
-    var requested_rounds = parseInt(prompt("How many rounds of Rock Paper Scissors do you want to play?"));
+    function chooseRounds() {
+        requested_rounds = prompt("How many rounds of Rock Paper Scissors do you want to play?");
+        requested_rounds = parseInt(requested_rounds);
+        requested_rounds_int = requested_rounds || 0;
+
+        if (requested_rounds_int <= 0) {
+            alert("Invalid number, please try again");
+            requested_rounds = 0;
+            return;
+        } else {   
+            requested_rounds_int = (requested_rounds.toFixed(0));
+            requested_rounds = requested_rounds_int;
+            alert(`You have chosen to play ${requested_rounds_int} rounds`);
+        }
+    }
     
-    function game(rounds = requested_rounds) {
-        var i;
-        var times_won = 0;
-        for (i=0; i < rounds; i++) {
-            outcome = playRound();
-            if (outcome[4] == "w") {
-                times_won++;
-            }
-            alert(outcome);
+
+    const roundsButton = document.querySelector("#chooseRounds");
+    roundsButton.addEventListener("click", function(e) {
+        chooseRounds()
+    });
+
+    const startButton = document.querySelector("#start");
+    startButton.addEventListener("click", function(e){
+        if (playerSelection == "") {
+            alert("please choose your hand first");
+            return
         }
 
-        alert(`You have won ${times_won} times out of ${rounds}`);
-        return;
+        if (requested_rounds == 0) {
+            alert("Please choose number of rounds first");
+            return;
+        }
         
-    }
+        
+        timesPlayed++;
+        var result;
+        result = playRound() 
+
+        if (result) {
+                timesWon++
+        }
+
+        alert(`You have won ${timesWon} times out of ${requested_rounds_int} rounds`);
+
+        if (timesPlayed == (requested_rounds) && timesPlayed != 0) {
+            alert(`The game has ended. You have won a total of ${timesWon} times!`)
+
+            while (world.hasChildNodes()) {
+                world.removeChild(world.lastChild);
+            }
+            return;
+        }
+        
+    });
+
+    const selectionButton = document.querySelector("#chooseHand");
+    selectionButton.addEventListener("click", function(e){
+        selectionContainer.appendChild(scissorsSelection);
+        selectionContainer.appendChild(paperSelection);
+        selectionContainer.appendChild(rockSelection);
+    })
 
 </script>
